@@ -1,0 +1,125 @@
+#!/bin/bash
+# -*- Mode: sh; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
+#
+# Author:
+#   Mark Padgham <mark.padgham@email.com>
+#
+# Description:
+#   A post-installation bash script for install common Ubuntu GIS software
+#   for use with R and python
+#
+# tab width
+tabs 4
+clear
+# set -xv # for debugging
+
+#----- Fancy Messages -----#
+show_error(){
+echo -e "\033[1;31m$@\033[m" 1>&2
+}
+show_info(){
+echo -e "\033[1;32m$@\033[0m"
+}
+show_info_red(){
+echo -e "\033[1;31m$@\033[0m"
+}
+show_warning(){
+echo -e "\033[1;33m$@\033[0m"
+}
+show_question(){
+echo -e "\033[1;34m$@\033[0m"
+}
+show_success(){
+echo -e "\033[1;35m$@\033[0m"
+}
+show_header(){
+echo -e "\033[1;36m$@\033[0m"
+}
+show_listitem(){
+echo -e "\033[0;37m$@\033[0m"
+}
+
+#----- Import Functions and Variables -----#
+
+DIR="$(dirname "$0")"
+
+. $DIR/functions/variables
+
+. $DIR/functions/aptadd
+. $DIR/functions/check
+. $DIR/functions/cleanup
+. $DIR/functions/nonapt
+. $DIR/functions/gdal
+
+. $DIR/functions/non-apt/instpython
+. $DIR/functions/non-apt/rpackages
+
+# Main
+function main {
+    eval `resize`
+    DOALL=$(whiptail \
+        --notags \
+        --title "Ubuntu System Setup" \
+        --menu "\nChoose an installation option:" \
+        --ok-button "Install" \
+        --cancel-button "Quit" \
+        $LINES $COLUMNS $(( $LINES - 12 )) \
+        'all_without_postgres'      '1. Without postgres' \
+        'all_with_postgres'         '2. With postgres' \
+        3>&1 1>&2 2>&3)
+     
+    exitstatus=$?
+    if [ $exitstatus = 0 ]; then
+        echo "***install***"
+        # ---repeated sudo -nv to update sudo timestamp
+        sudo -nv
+        $DOALL
+    else
+        quit
+    fi
+}
+
+# Main
+function all_without_postgres {
+    # ---aptadd
+    addkeys
+    addrepos
+
+    # ---packages
+    sudo -nv
+    while read F ; do
+        PF=$(echo $F | cut -d "#" -f 1) # cut comments from package names
+        PKGCHECK=$(dpkg-query -W --showformat='${Status}\n' $PF|grep "install ok installed")
+        if [ "" == "$PKGCHECK" ]
+        then
+            sudo apt-get install -y $PF
+        else
+            echo "package "$PF" already installed"
+        fi
+    done < <(cat $PKGS $PKGST)
+    gdal
+
+    # ---non-apt/rpackages
+    sudo -nv
+    rpackages
+    sudo R CMD javareconf
+
+    # ---non-apt/python
+    sudo -nv
+    install_python
+}
+
+# Quit
+function quit {
+    exit 99
+}
+
+#RUN
+check_dependencies
+sudo -v
+while :
+do
+  main
+done
+
+#END OF SCRIPT

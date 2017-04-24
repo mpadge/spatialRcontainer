@@ -1,0 +1,2 @@
+ppa:marutter/rdev
+deb http://cran.r-project.org/bin/linux/ubuntu ($lsb-release -c -s)/

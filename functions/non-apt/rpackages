@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# install R packages
+function rpackages {
+    if [ -z $RPKGS_NI ]
+    then
+        if [ -d "$RLIBLOC" ]; then
+            for i in ${RPKGS_NI[@]}; do
+                CMD='install.packages('\"${i}\"',repos='\"$CRAN\"',lib='\"$RLIBLOC\"')'
+                sudo Rscript --verbose -e $CMD
+            done 
+        else
+            for i in ${RPKGS_NI[@]}; do
+                CMD='install.packages('\"${i}\"',repos='\"$CRAN\"')'
+                sudo Rscript --verbose -e $CMD
+            done 
+        fi
+
+        # Done
+        show_success 'Done.'
+    fi
+    return 0
+}

@@ -1,0 +1,32 @@
+curl
+cmake 
+git
+gsl-bin 
+libboost-all-dev 
+libcgal-dev 
+libcurl4-openssl-dev 
+libgeos-dev
+libgeos++-dev
+libproj-dev
+libpq-dev # for RPostgreSQL
+libspatialite-dev
+libspatialite3
+libsqlite3-dev 
+libsqlite3-0 
+libssl-dev
+libudunits2-dev # for R units via sp
+libx11-dev 
+libxml2-dev 
+openjdk-8-jre
+openjdk-8-jdk
+postgis
+postgresql
+postgresql-contrib
+python3-dev 
+python-bs4 
+python-dev 
+python-regex 
+r-base 
+r-base-dev
+r-cran-rjava
+sqlite3 

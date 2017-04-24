@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# recieve new apt keys
+function addkeys {
+    show_info 'adding keys ... ' $(cat $KEYS)
+    sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys $(cat $KEYS)
+    # clang from apt.llvm.org
+    wget -O - http://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add -
+    show_success 'apt keys added'
+}
+
+# add new apt repositories
+# TODO: Add check for only if not existent
+function addrepos {
+    apt-get install lsb-release
+    show_info 'adding repos ... ' "$(cat $REPOS)"
+    while read F ; do
+        sudo add-apt-repository "$F"
+    done < $REPOS
+    sudo apt-get update
+    show_success 'apt repositories added'
+}

@@ -1,0 +1,51 @@
+#!/bin/bash
+
+function gdal_install {
+    GDAL_URL="http://download.osgeo.org/gdal/CURRENT/"
+    wget -O temp.html $GDAL_URL
+    GDAL_VERSION=`cat temp.html | grep -o -P '(?<=gdal-2).*(?=.tar.gz\")'`
+    GDAL_FILE="gdal-2"$GDAL_VERSION".tar.gz"
+    rm temp.html
+    wget $GDAL_URL$GDAL_FILE
+    tar zxf $GDAL_FILE
+    cd "gdal-2"$GDAL_VERSION
+    ./configure --with-sqlite3 --with-expat
+    # Driver support can be checked by inspecting configure output, or by
+    # $ gdal-config --formats
+    make
+    sudo make install
+    cd ..
+    rm -rf "gdal-2"$GDAL_VERSION $GDAL_FILE $GDAL_FILE
+    sudo apt-get install libgdal-dev
+    subo apt-get install expat # For GDAL OSM Driver
+}
+
+function gdal {
+    GNAME="GDAL"
+    if hash gdalinfo 2>/dev/null; then
+        show_info "GDAL installed"
+        VERS=$(eval "gdalinfo --version" | head -n 2 | cut -d " " -f 2)
+        MAJOR=$(echo $VERS | cut -d "." -f 1)
+        MINOR=$(echo $VERS | cut -d "." -f 1)
+        if [ $MAJOR -lt 2 ]; then
+            if (whiptail --title $GNAME --yesno "$GNAME version < 2; upgrade?." 8 78) then
+                gdal_install
+            fi
+        fi
+    else
+        if (whiptail --title $GNAME --yesno "$GNAME not installed; install?." 8 78) then
+            gdal_install
+        fi
+    fi
+}
+
+function pgresql_switch {
+    # Not used at at present
+    # default bash streams are 0=std in, 1=std out, 2=error, so 2>&1 sends
+    # errors to std out.
+    PKGCHECK=$(psql 2>&1|grep "FATAL") # no postgres user
+    if [ ! "" == "$PKGCHECK" ]; then 
+        show_info "Estalishing posgres user"
+        sudo -u -i postgres # establish "postgres" as user
+    fi
+}

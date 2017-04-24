@@ -1,0 +1,3 @@
+# required for R CMD check
+texinfo
+texlive-fonts-extra
