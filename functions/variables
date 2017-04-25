@@ -5,7 +5,6 @@ KEYS="$DIR/data/keys.list"
 REPOS="$DIR/data/repos.list"
 DEPS="$DIR/data/dependencies.list"
 PKGS="$DIR/data/packages.list"
-PKGST="$DIR/data/packages-texlive.list"
 
 RPKGS="$DIR/data/rpackages.list"
 RPKGS_NI=()
@@ -22,3 +21,6 @@ CRAN="https://cran.r-project.org"
 RLIBLOC="/usr/local/lib/R/site-library/"
 
 RPKGS="$DIR/data/pypackages.list"
+
+apt-get install lsb-release
+UB_VER=$(lsb_release -cs)

@@ -96,7 +96,8 @@ function all_without_postgres {
         else
             echo "package "$PF" already installed"
         fi
-    done < <(cat $PKGS $PKGST)
+    done < $PKGS
+    #done < <(cat $PKGS $PKGST)
     gdal
 
     # ---non-apt/rpackages
