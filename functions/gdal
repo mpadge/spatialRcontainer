@@ -28,14 +28,12 @@ function gdal {
         MAJOR=$(echo $VERS | cut -d "." -f 1)
         MINOR=$(echo $VERS | cut -d "." -f 1)
         if [ $MAJOR -lt 2 ]; then
-            if (whiptail --title $GNAME --yesno "$GNAME version < 2; upgrade?." 8 78) then
-                gdal_install
-            fi
-        fi
-    else
-        if (whiptail --title $GNAME --yesno "$GNAME not installed; install?." 8 78) then
+            echo "$GNAME version < 2; will now be upgraded"
             gdal_install
         fi
+    else
+        echo "$GNAME not installed; will now be installed"
+        gdal_install
     fi
 }
 

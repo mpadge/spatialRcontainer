@@ -47,7 +47,6 @@ DIR="$(dirname "$0")"
 
 . $DIR/functions/aptadd
 . $DIR/functions/check
-. $DIR/functions/cleanup
 . $DIR/functions/nonapt
 . $DIR/functions/gdal
 
@@ -56,26 +55,19 @@ DIR="$(dirname "$0")"
 
 # Main
 function main {
-    eval `resize`
-    DOALL=$(whiptail \
-        --notags \
-        --title "Ubuntu System Setup" \
-        --menu "\nChoose an installation option:" \
-        --ok-button "Install" \
-        --cancel-button "Quit" \
-        $LINES $COLUMNS $(( $LINES - 12 )) \
-        'all_without_postgres'      '1. Without postgres' \
-        'all_with_postgres'         '2. With postgres' \
-        3>&1 1>&2 2>&3)
-     
-    exitstatus=$?
-    if [ $exitstatus = 0 ]; then
-        echo "***install***"
-        # ---repeated sudo -nv to update sudo timestamp
-        sudo -nv
-        $DOALL
+    echo "---------------------------------------------------"
+    echo "1. Without postgres"
+    echo "2. With postgres"
+    echo "---------------------------------------------------"
+
+    read -p "Enter option: " OPT
+    if [ "$OPT" == 1 ]; then
+        all_without_postgres
+    elif [ "$OPT" == 2 ]; then
+        all_with_postgres
     else
-        quit
+        echo "Unknown option"
+        exit 1
     fi
 }
 
