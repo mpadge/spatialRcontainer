@@ -7,14 +7,11 @@ libgeos++-dev
 libproj-dev
 libpq-dev # for RPostgreSQL
 libspatialite-dev
-libspatialite3
 libsqlite3-dev 
 libsqlite3-0 
 libssl-dev
 libudunits2-dev # for R units via sp
 libxml2-dev 
-openjdk-8-jre
-openjdk-8-jdk
 postgis
 postgresql
 postgresql-contrib
