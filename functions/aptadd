@@ -16,6 +16,7 @@ function addrepos {
     while read F ; do
         sudo add-apt-repository "$F"
     done < $REPOS
+    sudo add-apt-repository "deb http://cran.r-project.org/bin/linux/ubuntu $UB_VER/"
     sudo apt-get update
     show_success 'apt repositories added'
 }

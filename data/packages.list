@@ -1,5 +1,5 @@
 curl
-libboost-all-dev 
+#libboost-all-dev 
 libcgal-dev 
 libcurl4-openssl-dev 
 libgeos-dev
