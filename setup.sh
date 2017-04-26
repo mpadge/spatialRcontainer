@@ -92,6 +92,18 @@ function all_without_postgres {
     #done < <(cat $PKGS $PKGST)
     gdal
 
+    # --- list non-installed R packages
+    RPKGS_NI=()
+    INST=$(sudo Rscript -e "rownames (installed.packages ())")
+    while read F ; do
+        # cut comments from package names and remove all whitespace
+        PF=$(echo $F | cut -d "#" -f 1 | tr -d '[:space:]') 
+        if [[ ! ${INST[*]} =~ $PF ]]
+        then
+            RPKGS_NI+=($PF)
+        fi
+    done < $RPKGS
+
     # ---non-apt/rpackages
     sudo -nv
     rpackages
