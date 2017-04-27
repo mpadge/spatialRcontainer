@@ -2,21 +2,44 @@
 
 # recieve new apt keys
 function addkeys {
-    show_info 'adding keys ... ' $(cat $KEYS)
-    sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys $(cat $KEYS)
+    keys_added=false
+    while read F ; do
+        EX=$(apt-key list | grep -w $F)
+        if  [ "" == "$EX" ]
+        then
+            show_info 'adding keys ... ' $(cat $KEYS)
+            sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys $(cat $KEYS)
+            keys_added=true
+        fi
+    done < $KEYS
     # clang from apt.llvm.org
-    wget -O - http://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add -
-    show_success 'apt keys added'
+    #wget -O - http://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add -
+    #show_success 'apt keys added'
+    if $keys_added ; then
+        sudo apt-get update
+    fi
 }
 
 # add new apt repositories
 # TODO: Add check for only if not existent
 function addrepos {
-    show_info 'adding repos ... ' "$(cat $REPOS)"
+    repos_added=false
     while read F ; do
-        sudo add-apt-repository "$F"
-    done < $REPOS
-    sudo add-apt-repository "deb http://cran.r-project.org/bin/linux/ubuntu $UB_VER/"
-    sudo apt-get update
-    show_success 'apt repositories added'
+        REX=grep "$F" /etc/apt/sources.list
+        if [ "" == "$REX" ]
+        then
+            show_info 'adding repos ... ' "$(cat $REPOS)"
+            sudo add-apt-repository "$F"
+            repos_added=true
+        fi
+        REX=grep "cran.r-project.org" /etc/apt/sources.list
+        if [ "" == "$REX" ]
+        then
+            sudo add-apt-repository "deb http://cran.r-project.org/bin/linux/ubuntu $UB_VER/"
+            repos_added=true
+        fi
+
+        if $repos_added ; then
+            sudo apt-get update
+        fi
 }
