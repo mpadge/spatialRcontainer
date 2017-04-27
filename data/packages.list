@@ -1,6 +1,6 @@
 curl
 #libboost-all-dev 
-libcgal-dev
+#libcgal-dev # installed with boost anyway
 libcurl4-openssl-dev
 libgeos-dev
 libgeos++-dev
