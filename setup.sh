@@ -100,10 +100,13 @@ function all_without_postgres {
     INST=$(sudo Rscript -e "rownames (installed.packages ())")
     while read F ; do
         # cut comments from package names and remove all whitespace
-        PF=$(echo $F | cut -d "#" -f 1 | tr -d '[:space:]') 
-        if [[ ! ${INST[*]} =~ $PF ]]
+        PF=$(echo $F | cut -d " " -f 1)
+        if [[ $PF != "#"* ]]
         then
-            RPKGS_NI+=($PF)
+            if [[ ! ${INST[*]} =~ $PF ]]
+            then
+                RPKGS_NI+=($PF)
+            fi
         fi
     done < $RPKGS
 
