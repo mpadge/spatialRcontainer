@@ -80,13 +80,16 @@ function all_without_postgres {
     # ---packages
     sudo -nv
     while read F ; do
-        PF=$(echo $F | cut -d "#" -f 1) # cut comments from package names
-        PKGCHECK=$(dpkg-query -W --showformat='${Status}\n' $PF|grep "install ok installed")
-        if [ "" == "$PKGCHECK" ]
+        PF=$(echo $F | cut -d " " -f 1) # cut comments from package names
+        if [[ $PF != "#"* ]] # don't install commented-out packages
         then
-            sudo apt-get install -y $PF
-        else
-            echo "package "$PF" already installed"
+            PKGCHECK=$(dpkg-query -W --showformat='${Status}\n' $PF|grep "install ok installed")
+            if [ "" == "$PKGCHECK" ]
+            then
+                sudo apt-get install -y $PF
+            else
+                echo "package "$PF" already installed"
+            fi
         fi
     done < $PKGS
     #done < <(cat $PKGS $PKGST)

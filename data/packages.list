@@ -1,14 +1,14 @@
 curl
 #libboost-all-dev 
-libcgal-dev 
-libcurl4-openssl-dev 
+libcgal-dev
+libcurl4-openssl-dev
 libgeos-dev
 libgeos++-dev
 libproj-dev
 libpq-dev # for RPostgreSQL
 libspatialite-dev
-libsqlite3-dev 
-libsqlite3-0 
+libsqlite3-dev
+libsqlite3-0
 libssl-dev
 libudunits2-dev # for R units via sp
 libxml2-dev 
